@@ -39,6 +39,7 @@ figures/        the figures used in the talk
 
 | Talk slide | Figure | Script |
 |---|---|---|
+| Where the five snow basins are | `basins_map.png` | `basins_map.py` |
 | Does the tool recover a planted memory? | `fig_synthetic_two_panel_S2_same_axis.png` | `nb08a_generate_synthetic.py` → `make_syn_configs.py` → train (`slurm/slurm_train_syn.slurm`) → `nb08b_recovery.py` → `fig_synthetic_two_panel.py --same-axis` |
 | One unit looks like a snowpack | `nb31_unit77_06623800_WY2011.png` | `nb31_fig_unit_three_panel.py` |
 | Cells that track snow do not carry the snow | `nb29_recovered.png` | `nb27_read_directions.py` (one run per basin and seed) → `nb27_collect.py` → `nb29_fig_snow_store.py` |
