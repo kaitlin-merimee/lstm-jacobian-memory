@@ -18,7 +18,7 @@ Every analysis script has a `--toy` mode that runs on a small random LSTM, so yo
 
 ```bash
 conda env create -f environment.yml && conda activate neuralhydrology
-PYTHONPATH=src python src/nb32_cell_memory.py --toy --horizon 60 --starts 12-01 03-01
+PYTHONPATH=src python src/memory_per_cell.py --toy --horizon 60 --starts 12-01 03-01
 ```
 
 ## Repository layout
@@ -37,17 +37,19 @@ figures/        the figures used in the talk
 
 ## Figures and the scripts that make them
 
+Scripts write their outputs to `analysis/` under short internal names (for example `nb29_recovered.png`); the figure names below are those files.
+
 | Talk slide | Figure | Script |
 |---|---|---|
 | Where the five snow basins are | `basins_map.png` | `basins_map.py` |
-| Does the tool recover a planted memory? | `fig_synthetic_two_panel_S2_same_axis.png` | `nb08a_generate_synthetic.py` → `make_syn_configs.py` → train (`slurm/slurm_train_syn.slurm`) → `nb08b_recovery.py` → `fig_synthetic_two_panel.py --same-axis` |
-| One unit looks like a snowpack | `nb31_unit77_06623800_WY2011.png` | `nb31_fig_unit_three_panel.py` |
-| Cells that track snow do not carry the snow | `nb29_recovered.png` | `nb27_read_directions.py` (one run per basin and seed) → `nb27_collect.py` → `nb29_fig_snow_store.py` |
-| What flow reads is held until melt | `nb32_memory_end_date_full.png` | `nb32_cell_memory.py` → `nb32_collect.py` → `nb32_fig_memory.py --panels 3 --full` |
-| Backup: memory against effect on flow | `nb32_memory_vs_flow_06623800_seed1_12-01.png` | `nb32_fig_memory.py --panels 2` |
-| Backup: memory through the year | `nb32_memory_through_year.png` | `nb32_fig_memory.py --panels 1` |
-| Backup: when vs how much (held-out probe) | `nb29_when_vs_how_much.png` | `nb28_read_directions_followup.py` → `nb29_fig_snow_store.py` |
-| Backup: the model as a whole | `nb24_where_each_months_rain_goes.png`, `nb26_observed_lag.png` | `src/backup/nb24_…`, `nb23_all_basins_memory.py` → `nb26_observed_lag_snow_basins.py` |
+| Does the tool recover a planted memory? | `fig_synthetic_two_panel_S2_same_axis.png` | `synthetic_1_generate.py` → `synthetic_2_configs.py` → train (`slurm/train_synthetic.slurm`) → `synthetic_3_recovery.py` → `synthetic_4_figure.py --same-axis` |
+| One unit looks like a snowpack | `nb31_unit77_06623800_WY2011.png` | `snow_unit_figure.py` |
+| Cells that track snow do not carry the snow | `nb29_recovered.png` | `where_snow_patching.py` (one run per basin and seed) → `where_snow_collect.py` → `where_snow_figures.py` |
+| What flow reads is held until melt | `nb32_memory_end_date_full.png` | `memory_per_cell.py` → `memory_per_cell_collect.py` → `memory_per_cell_figures.py --panels 3 --full` |
+| Backup: memory against effect on flow | `nb32_memory_vs_flow_06623800_seed1_12-01.png` | `memory_per_cell_figures.py --panels 2` |
+| Backup: memory through the year | `nb32_memory_through_year.png` | `memory_per_cell_figures.py --panels 1` |
+| Backup: when vs how much (held-out probe) | `nb29_when_vs_how_much.png` | `where_snow_followup.py` → `where_snow_figures.py` |
+| Backup: the model as a whole | `nb24_where_each_months_rain_goes.png`, `whole_model_snow_lag.png` | `src/backup/nb24_…`, `whole_model_memory.py` → `whole_model_snow_lag.py` |
 
 ## Reproducing the results
 
@@ -57,13 +59,13 @@ Run from the repository root with `PYTHONPATH=src`, in this order (each slurm fi
 
 1. **Train** the benchmark LSTM, three seeds: `slurm/train_camels531*.slurm` (configs in `configs/`; trained on water years 2000–2008, analysed on 2009–2014).
 2. **Synthetic check**: the synthetic chain in the table above.
-3. **Snow reference**: `spires_extract_all.py` (`slurm/spires_all.slurm`).
-4. **Whole-model memory and observed snow lag**: `nb23_all_basins_memory.py`, then `nb26_observed_lag_snow_basins.py` (its table gives the observed melt timing used in step 7).
-5. **Unit 77**: `nb31_fig_unit_three_panel.py`.
-6. **Where the snow is**: `nb27_read_directions.py` (15 runs: 5 basins × 3 seeds) → `nb27_collect.py` → `nb28_read_directions_followup.py` → `nb29_fig_snow_store.py`.
-7. **How long it is held**: `nb32_cell_memory.py` (15 runs) → `nb32_collect.py` → `nb32_fig_memory.py`.
+3. **Snow reference**: `data_spires_all_basins.py` (`slurm/data_spires_all_basins.slurm`).
+4. **Whole-model memory and observed snow lag**: `whole_model_memory.py`, then `whole_model_snow_lag.py` (its table gives the observed melt timing used in step 7).
+5. **Unit 77**: `snow_unit_figure.py`.
+6. **Where the snow is**: `where_snow_patching.py` (15 runs: 5 basins × 3 seeds) → `where_snow_collect.py` → `where_snow_followup.py` → `where_snow_figures.py`.
+7. **How long it is held**: `memory_per_cell.py` (15 runs) → `memory_per_cell_collect.py` → `memory_per_cell_figures.py`.
 
-Backup-slide analyses are in `src/backup/`; `nb30_snow_cells_role.py` needs step 6's outputs.
+Backup-slide analyses are in `src/backup/`; `snow_cells_role.py` needs step 6's outputs.
 
 Trained model weights are not in this repository; they are available on request.
 

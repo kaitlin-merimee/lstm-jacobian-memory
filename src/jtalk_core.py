@@ -1,7 +1,7 @@
-"""Shared functions for the AGU follow-up analyses (nb16 nudge, nb17 lag profiles, nb18 Lyapunov seeds).
+"""Shared functions for the AGU follow-up analyses (nudge_through_melt nudge, lag_profiles lag profiles, lyapunov_seeds Lyapunov seeds).
 
-Same conventions as nb14/nb15: numpy LSTM in PyTorch gate order (i, f, g, o), 365-day windows that start
-from h = c = 0, windows ending in the unseen years WY2009-2014. The NeuralHydrology loading is the nb14
+Same conventions as the early notebooks: numpy LSTM in PyTorch gate order (i, f, g, o), 365-day windows that start
+from h = c = 0, windows ending in the unseen years WY2009-2014. The NeuralHydrology loading is the an early notebook
 Cell 2 pattern. `--toy` in every script swaps in a small random LSTM so the code can be tested anywhere.
 """
 import os

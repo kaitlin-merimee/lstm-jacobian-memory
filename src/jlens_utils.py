@@ -1,6 +1,6 @@
 """jlens_utils.py
 
-Shared weight-loading, unroll, windowing, timescale and recession code for nb08-nb11.
+Shared weight-loading, unroll, windowing, timescale and recession code for the synthetic and backup scripts.
 Recovered from jacobian_followup_experiments.md (Oct 2026). Items marked VERIFY must be
 checked against the NeuralHydrology 1.13 install before trusting outputs.
 """
@@ -118,7 +118,7 @@ def forget_tau(f):
 
 
 def portfolio(model, f_windows):
-    """f_windows: [B,T,H] forget gates over all windows of one basin. Matches nb02 definitions."""
+    """f_windows: [B,T,H] forget gates over all windows of one basin. Matches an early notebook definitions."""
     tau_u = np.median(np.median(forget_tau(f_windows), axis=1), axis=0)     # [H]
     ltau = np.log10(np.clip(tau_u, 1e-2, TAU_CAP))
     w = model.w_abs
@@ -162,7 +162,7 @@ def profile_stats(prof):
             "mean_lag": float((lags * p).sum() / p.sum())}
 
 
-# ---------- recession and signatures (copied from nb03 so all notebooks agree) ----------
+# ---------- recession and signatures (copied from an early notebook so all notebooks agree) ----------
 def recession_taus(q, min_flow=1e-3, skip_after_peak=2, min_event_len=7, mask=None):
     """Point-wise and event-fit recession tau. `mask` (bool array, len(q)-1) optionally
     restricts which day-pairs count as recession (e.g., days declining in BOTH obs and sim)."""
